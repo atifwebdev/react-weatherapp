@@ -1,78 +1,67 @@
 import logo from './logo.svg';
-import {useState, useRef} from 'react';
-import axios from "axios";
+import { HiOutlineSearch } from 'react-icons/hi';
 import './App.css';
 
 function App() {
-  // states
-  const [cityName, setCityName] = useState("");
-
-  // Ref
-  const inputRef = useRef(null);
-
-  // use this state to print API data
-  const [getData, setData] = useState(null);
-
-  const getWeather = async (event) => {
-    event.preventDefault();
-    // console.log("Data get from from");
-    // const inpVal = document.querySelector("#cityname").value;
-    // console.log(`Data get from from: ${inpVal}`);
-
-    // console.log(`Getting Data from Ref: ${inputRef.current.value}`);
-
-    try{
-      const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${inputRef.current.value}&aqi=no`);
-      console.log("Respose ",response.data);
-      setData(response.data);
-    }
-    catch(e){
-      console.log(e);
-    }
-  }
-
-  // Data Handler run on every input
-  const changeHandler = (event) => {
-    setCityName(event.target.value);
-    // console.log("Change Handler: ",event.target.value);
-  }
-
   return (
-    <div>
-      <h1>Weather App</h1>
+    <div className="container">
+        <div className="weather__header">
+            <form className="weather__search">
+                <HiOutlineSearch />
+                <input type="text" placeholder="Search for a city..." className="weather__searchform" />         
+                <i className="fa-solid fa-magnifying-glass"></i>
+            </form> 
+            <div className="weather__units">
+                <span className="weather_unit_celsius">°C</span>
+                <span className="weather_unit_farenheit">°F</span>
+            </div>
+        </div>
+        <div className="weather__body">
+            <h1 className="weather__city">London, United Kingdom</h1>
+            <div className="weather__datetime">
+            Saturday, August 26, 2023 at 12:28 PM
+            </div>
+            <div className="weather__forecast">Clouds</div>
+            <div className="weather__icon">
+            </div>
+            <p className="weather__temperature">19°
+            </p>
+            <div className="weather__minmax">
+                <p>Min: 16°</p>
+                <p>Max: 21°</p>
+            </div>
+        </div>
 
-      <form onSubmit={getWeather}>
-        <label htmlFor="cityname">City: </label>
-        <input
-          type="text"
-          id="cityname"
-          maxLength={20}
-          minLength={2}
-          onChange={changeHandler}
-          required
-          ref={inputRef}
-        />
-        <br />
-        <button type="submit">Get Weather</button>
-      </form>
-
-      <br />
-      <hr />
-      <br />
-
-      <div>
-        City Name: {getData?.location?.name}, {getData?.location?.region} {getData?.location?.country}
-        <br />
-        Temperature in C: {getData?.current?.temp_c}
-        <br />
-        Humidity: {getData?.current?.humidity}
-        <br />
-        Wind: {getData?.current?.wind_kph}
-        <br />
-        Condition: {getData?.current?.condition?.text}
-        <br />
-        Time: {getData?.location?.localtime}
-      </div>
+        <div className="weather__info">
+            <div className="weather__card">
+                <i className="fa-solid fa-temperature-full"></i>
+                <div>
+                    <p>Real Feel</p>
+                    <p className="weather__realfeel">18°</p>
+                </div>
+            </div>
+            <div className="weather__card">
+                <i className="fa-solid fa-droplet"></i>
+                <div>
+                    <p>Humidity</p>
+                    <p className="weather__humidity">66%</p>
+                </div>
+            </div>
+            <div className="weather__card">
+                <i className="fa-solid fa-wind"></i>
+                <div>
+                    <p>Wind</p>
+                    <p className="weather__wind">4.63 m/s</p>
+                </div>
+            </div>
+            <div className="weather__card">
+                <i className="fa-solid fa-gauge-high"></i>
+                <div>
+                    <p>Pressure</p>
+                    <p className="weather__pressure">1006 hPa</p>
+                </div>
+            </div>
+        </div>
     </div>
   );
 }
