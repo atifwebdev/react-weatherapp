@@ -39,7 +39,7 @@ input::placeholder {
     position: relative;
 }
 
-.weather__search i {
+.weather__search svg {
     position: absolute;
     left: 10px;
     top: 10px;
@@ -109,7 +109,7 @@ input::placeholder {
     border-radius: 10px;
 }
 
-.weather__card i {
+.weather__card svg {
     font-size: 1.5rem;
     margin-right: 1rem;
 }
