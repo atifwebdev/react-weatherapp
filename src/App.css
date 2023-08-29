@@ -39,6 +39,17 @@ input::placeholder {
     position: relative;
 }
 
+form.weather__search button {
+    background-color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    color: #1e1e1e;
+    margin-left: 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .weather__search svg {
     position: absolute;
     left: 10px;

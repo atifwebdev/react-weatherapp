@@ -20,6 +20,14 @@ function App() {
     const getWeather = async (event) => {
         event.preventDefault();
         //console.log(inputRef.current.value);
+
+
+    
+            // navigator.geolocation.watchPosition(function(position) {
+            //   console.log(position)
+            // });
+
+                   
         try{
             const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${inputRef.current.value}&aqi=no`);
             console.log("Respose ",response.data);
@@ -29,6 +37,17 @@ function App() {
             console.log(e);
           }
     }
+
+    navigator.geolocation.getCurrentPosition( async(position) => {
+        console.log("Latitude is :", position.coords.latitude);
+        console.log("Longitude is :", position.coords.longitude);
+        var loc = await axios.get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`);
+        console.log(loc);
+      
+        const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${loc.data.city}&aqi=no`);
+        console.log("Respose ",response.data);
+        setData(response.data);
+    });
 
 
   return (
