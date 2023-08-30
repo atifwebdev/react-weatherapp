@@ -129,7 +129,7 @@ form.weather__search button {
     font-size: 14px;
 }
 
-@media(max-width: 936px){
+@media(max-width: 1080px){
     .container {
         width: 90%;
     }
@@ -143,6 +143,18 @@ form.weather__search button {
     }
 }
 
+@media(max-width: 440px){
+    .weather__search {
+        text-align: center;
+    }
+    .weather__search svg {
+        left: 42px;
+    }
+    form.weather__search button {
+        padding: 0.5rem 2rem;
+        margin-top: 12px;
+    }
+}
 
 @media(max-width: 400px){
     .weather__info {

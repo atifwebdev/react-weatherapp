@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import axios from "axios";
 import logo from './logo.svg';
 import { HiOutlineSearch } from 'react-icons/hi';
@@ -19,18 +19,9 @@ function App() {
 
     const getWeather = async (event) => {
         event.preventDefault();
-        //console.log(inputRef.current.value);
-
-
-    
-            // navigator.geolocation.watchPosition(function(position) {
-            //   console.log(position)
-            // });
-
-                   
         try{
-            const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${inputRef.current.value}&aqi=no`);
-            console.log("Respose ",response.data);
+            const response = await axios.get(`https://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${inputRef.current.value}&aqi=no`);
+            // console.log("Respose ",response.data);
             setData(response.data);
           }
           catch(e){
@@ -38,17 +29,15 @@ function App() {
           }
     }
 
+    useEffect(() => {
     navigator.geolocation.getCurrentPosition( async(position) => {
-        console.log("Latitude is :", position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-        var loc = await axios.get(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`);
-        console.log(loc);
-      
-        const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${loc.data.city}&aqi=no`);
-        console.log("Respose ",response.data);
+        // console.log("Latitude is :", position.coords.latitude);
+        // console.log("Longitude is :", position.coords.longitude);
+        const response = await axios.get(`https://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${position.coords.latitude},${position.coords.longitude}&aqi=no`);
+        // console.log("Respose ",response.data);
         setData(response.data);
     });
-
+    }, []);
 
   return (
     <div className="container">
@@ -66,7 +55,8 @@ function App() {
         <div className="weather__body">
             <h1 className="weather__city">{getData?.location?.name}, {getData?.location?.country}</h1>
             <div className="weather__datetime">
-            Saturday, August 26, 2023 at 12:28 PM
+            {getData?.current?.last_updated}
+            {/* Saturday, August 26, 2023 at 12:28 PM */}
             </div>
             <div className="weather__forecast">{getData?.current?.condition?.text}</div>
             <div className="weather__icon">
@@ -82,7 +72,6 @@ function App() {
 
         <div className="weather__info">
             <div className="weather__card">
-                {/* <i className="fa-solid fa-temperature-full"></i> */}
                 <TbTemperature />
                 <div>
                     <p>Real Feel</p>
@@ -90,7 +79,6 @@ function App() {
                 </div>
             </div>
             <div className="weather__card">
-                {/* <i className="fa-solid fa-droplet"></i> */}
                 <ImDroplet />
                 <div>
                     <p>Humidity</p>
@@ -98,7 +86,6 @@ function App() {
                 </div>
             </div>
             <div className="weather__card">
-                {/* <i className="fa-solid fa-wind"></i> */}
                 <TbWind />
                 <div>
                     <p>Wind</p>
@@ -106,7 +93,6 @@ function App() {
                 </div>
             </div>
             <div className="weather__card">
-                {/* <i className="fa-solid fa-gauge-high"></i> */}
                 <PiGaugeBold />
                 <div>
                     <p>Pressure</p>
