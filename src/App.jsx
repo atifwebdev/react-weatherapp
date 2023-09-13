@@ -1,10 +1,9 @@
 import {useState, useRef, useEffect} from 'react';
 import axios from "axios";
 import logo from './logo.svg';
+import loaderImg from './loader.webp';
 import { HiOutlineSearch } from 'react-icons/hi';
-import { TbTemperature, TbWind } from 'react-icons/tb';
-import { ImDroplet } from 'react-icons/im';
-import { PiGaugeBold } from 'react-icons/pi';
+import WeatherCard from "./components/WeatherCard";
 
 
 import './App.css';
@@ -15,14 +14,22 @@ function App() {
     const inputRef = useRef(null);
 
     // use this state to print API data
-    const [getData, setData] = useState(null);
+    const [getData, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [currentWeather, setCurrentWeather] = useState(null);
 
     const getWeather = async (event) => {
         event.preventDefault();
         try{
+            setIsLoading(true);
             const response = await axios.get(`https://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${inputRef.current.value}&aqi=no`);
             // console.log("Respose ",response.data);
-            setData(response.data);
+            setIsLoading(false);
+            // setData(response.data);
+            // setData([response.data, ...getData]);
+
+            setData((prev) => [response.data, ...prev]);
+            event.target.reset();
           }
           catch(e){
             console.log(e);
@@ -33,9 +40,11 @@ function App() {
     navigator.geolocation.getCurrentPosition( async(position) => {
         // console.log("Latitude is :", position.coords.latitude);
         // console.log("Longitude is :", position.coords.longitude);
+        setIsLoading(true);
         const response = await axios.get(`https://api.weatherapi.com/v1/current.json?key=0da8645d90584c068f3101721230907&q=${position.coords.latitude},${position.coords.longitude}&aqi=no`);
         // console.log("Respose ",response.data);
-        setData(response.data);
+        setCurrentWeather(response.data);
+        setIsLoading(false);
     });
     }, []);
 
@@ -51,54 +60,17 @@ function App() {
                 <span className="weather_unit_celsius">°C</span>
                 {/* <span className="weather_unit_farenheit">°F</span> */}
             </div>
-        </div>
-        <div className="weather__body">
-            <h1 className="weather__city">{getData?.location?.name}, {getData?.location?.country}</h1>
-            <div className="weather__datetime">
-            {getData?.current?.last_updated}
-            {/* Saturday, August 26, 2023 at 12:28 PM */}
-            </div>
-            <div className="weather__forecast">{getData?.current?.condition?.text}</div>
-            <div className="weather__icon">
-                <img src={getData?.current?.condition?.icon} />
-            </div>
-            <p className="weather__temperature">{getData?.current?.temp_c}°C
-            </p>
-            <div className="weather__minmax">
-                <p>{getData?.current?.temp_f}°F</p>
-                {/* <p>Max: 21°</p> */}
-            </div>
+            {isLoading ? <div className='loaderBox'><img src={loaderImg} alt='Loading...'></img></div> : null}
+            {getData.length || currentWeather ? null : <div>No Data</div>}
         </div>
 
-        <div className="weather__info">
-            <div className="weather__card">
-                <TbTemperature />
-                <div>
-                    <p>Real Feel</p>
-                    <p className="weather__realfeel">{getData?.current?.feelslike_c}°C</p>
-                </div>
-            </div>
-            <div className="weather__card">
-                <ImDroplet />
-                <div>
-                    <p>Humidity</p>
-                    <p className="weather__humidity">{getData?.current?.humidity}%</p>
-                </div>
-            </div>
-            <div className="weather__card">
-                <TbWind />
-                <div>
-                    <p>Wind</p>
-                    <p className="weather__wind">{getData?.current?.wind_kph} km/h</p>
-                </div>
-            </div>
-            <div className="weather__card">
-                <PiGaugeBold />
-                <div>
-                    <p>Pressure</p>
-                    <p className="weather__pressure">{getData?.current?.pressure_mb} hPa</p>
-                </div>
-            </div>
+        <div className='showContent'>
+            {(getData.length) ? (
+            getData.map((eachWeatherData, index) =>
+                <WeatherCard key={index} data={eachWeatherData} />
+            )) : null}
+            
+            { currentWeather && <WeatherCard data={currentWeather} />}
         </div>
     </div>
   );
